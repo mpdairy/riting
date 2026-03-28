@@ -1,0 +1,299 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: #000;
+  color: #d0d0d0;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* --- Scrollbar --- */
+
+#editor::-webkit-scrollbar {
+  width: 6px;
+}
+
+#editor::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#editor::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 3px;
+}
+
+#editor::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Firefox */
+#editor {
+  scrollbar-width: thin;
+  scrollbar-color: #2a2a2a transparent;
+}
+
+/* --- Tabs --- */
+
+#tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 1rem 1rem 0;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: #333;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tab:hover {
+  color: #666;
+}
+
+.tab.active {
+  color: #d0d0d0;
+  background: #111;
+}
+
+.tab.has-content {
+  color: #555;
+}
+
+.tab.has-content.active {
+  color: #d0d0d0;
+}
+
+/* --- Writing surface --- */
+
+#page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1rem 2rem 1rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#editor {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: #d0d0d0;
+  font-family: inherit;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  width: 100%;
+  caret-color: #d0d0d0;
+}
+
+#editor::placeholder {
+  color: #444;
+}
+
+/* --- Status bar --- */
+
+#status {
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+#status.generating {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* --- Settings gear --- */
+
+#settings-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #2a2a2a;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+#settings-btn:hover {
+  color: #666;
+}
+
+/* --- Modal --- */
+
+#modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#modal.hidden {
+  display: none;
+}
+
+#modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+#modal-content {
+  position: relative;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 420px;
+}
+
+#modal-content h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+#modal-content label {
+  display: block;
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+#key-help {
+  color: #555;
+  text-decoration: none;
+  margin-left: 0.4em;
+  transition: color 0.2s;
+}
+
+#key-help:hover {
+  color: #888;
+}
+
+#modal-content input {
+  width: 100%;
+  background: #000;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  color: #d0d0d0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  margin-bottom: 1.5rem;
+}
+
+#modal-content input:focus {
+  border-color: #444;
+}
+
+.range-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.range-row .range-field {
+  flex: 1;
+}
+
+.range-row .range-field label {
+  margin-bottom: 0.35rem;
+}
+
+.range-row .range-field input {
+  margin-bottom: 0;
+}
+
+.setting-section {
+  color: #444;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #1a1a1a;
+}
+
+.setting-section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+#modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+#modal-actions button {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  color: #888;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#modal-actions button:hover {
+  background: #2a2a2a;
+}
+
+#save-btn {
+  background: #0a2a0a;
+  border-color: #1a4a1a;
+  color: #6a6;
+}
+
+#save-btn:hover {
+  background: #1a3a1a;
+}
+
+/* --- Mobile --- */
+
+@media (max-width: 600px) {
+  #page {
+    padding: 1.5rem 1.2rem 0.5rem;
+  }
+
+  #editor {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  #settings-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
