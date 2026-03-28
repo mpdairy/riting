@@ -10,7 +10,7 @@
 //   - MAX_PROMPT_CHARS: max characters in prompt content (default 15000)
 
 var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-var MODEL = 'llama-3.1-8b-instant';
+var MODEL = 'llama-3.3-70b-versatile';
 
 export async function onRequestPost(context) {
   var { request, env } = context;
