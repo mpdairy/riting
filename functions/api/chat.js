@@ -61,14 +61,26 @@ export async function onRequestPost(context) {
     body.max_tokens = maxTokensCap;
   }
 
-  // Reject if prompt is too long (story exceeded limit)
+  // Cap number of messages (frontend only sends 2: system + user)
+  if (body.messages.length > 5) {
+    return new Response(
+      JSON.stringify({ error: 'Too many messages' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Reject if total prompt content is too long
+  var totalChars = 0;
   for (var i = 0; i < body.messages.length; i++) {
-    if (body.messages[i].content && body.messages[i].content.length > maxPromptChars) {
-      return new Response(
-        JSON.stringify({ error: 'Story is too long for the free tier' }),
-        { status: 413, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (body.messages[i].content) {
+      totalChars += body.messages[i].content.length;
     }
+  }
+  if (totalChars > maxPromptChars) {
+    return new Response(
+      JSON.stringify({ error: 'Story is too long for the free tier' }),
+      { status: 413, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   // --- Proxy to Groq ---
