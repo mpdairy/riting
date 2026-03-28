@@ -220,6 +220,12 @@
     if (e.key === 'Escape') hideSettings();
   });
 
+  // --- Block typing during generation ---
+
+  editor.addEventListener('keydown', function (e) {
+    if (state.generating) e.preventDefault();
+  });
+
   // --- Word tracking ---
 
   editor.addEventListener('input', function () {
@@ -235,6 +241,34 @@
       triggerGeneration();
     }
   });
+
+  // --- Blinking robot indicator ---
+
+  var blinkInterval = null;
+  var blinkBase = 0;
+  var blinkVisible = false;
+
+  function startBlink() {
+    blinkBase = editor.value.length;
+    blinkVisible = true;
+    editor.value += ' \uD83E\uDD16';
+    editor.scrollTop = editor.scrollHeight;
+    blinkInterval = setInterval(function () {
+      if (blinkVisible) {
+        editor.value = editor.value.slice(0, blinkBase);
+      } else {
+        editor.value = editor.value.slice(0, blinkBase) + ' \uD83E\uDD16';
+      }
+      blinkVisible = !blinkVisible;
+      editor.scrollTop = editor.scrollHeight;
+    }, 500);
+  }
+
+  function stopBlink() {
+    clearInterval(blinkInterval);
+    blinkInterval = null;
+    editor.value = editor.value.slice(0, blinkBase);
+  }
 
   // --- Typewriter effect ---
 
@@ -296,6 +330,7 @@
     }
     var insertStart = editor.value.length;
 
+    startBlink();
     state.abortController = new AbortController();
 
     try {
@@ -362,6 +397,7 @@
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
+        stopBlink();
         setStatus('error: ' + err.message);
         state.generating = false;
         editor.readOnly = false;
@@ -369,6 +405,8 @@
         return;
       }
     }
+
+    stopBlink();
 
     // Drop the last word in case it got cut off mid-token
     var trimmed = accumulated.replace(/\s*\S+\s*$/, '');
