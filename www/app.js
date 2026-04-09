@@ -279,32 +279,27 @@
 
   downloadBtn.addEventListener('click', function () {
     saveDraftNow();
-    var delay = 0;
-    var count = 0;
+    var parts = [];
     for (var t = 1; t <= 8; t++) {
       var draft = localStorage.getItem(draftKey(t));
       if (draft && draft.trim().length > 0) {
-        (function (tab, content) {
-          setTimeout(function () {
-            var blob = new Blob([content], { type: 'text/plain' });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'story-' + tab + '.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          }, delay);
-        })(t, draft);
-        delay += 300;
-        count++;
+        parts.push('=== Story ' + t + ' ===\n\n' + draft.trim());
       }
     }
-    if (count === 0) {
+    if (parts.length === 0) {
       setStatus('no stories to download');
       setTimeout(function () { setStatus(''); }, 2000);
+      return;
     }
+    var blob = new Blob([parts.join('\n\n\n')], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'riting-stories.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
 
   keyInput.addEventListener('keydown', function (e) {
