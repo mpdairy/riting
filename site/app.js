@@ -10,6 +10,7 @@
     directGroqUrl: 'https://api.groq.com/openai/v1/chat/completions',
     model: 'llama-3.1-8b-instant',
     storyWordLimit: 2000,
+    originality: 5,
     systemPrompt:
       'You are a creative writing collaborator. Continue the story or text ' +
       'seamlessly from where it left off. Write ONLY the continuation text ' +
@@ -39,6 +40,7 @@
   var userMaxInput = document.getElementById('user-max');
   var aiMinInput = document.getElementById('ai-min');
   var aiMaxInput = document.getElementById('ai-max');
+  var originalityInput = document.getElementById('originality');
   var saveBtn = document.getElementById('save-btn');
   var cancelBtn = document.getElementById('cancel-btn');
 
@@ -56,6 +58,22 @@
   function countWords(text) {
     var t = text.trim();
     return t ? t.split(/\s+/).length : 0;
+  }
+
+  function getTemperature() {
+    return 0.6 + (CONFIG.originality * 0.08);
+  }
+
+  function getSystemPrompt() {
+    var base = CONFIG.systemPrompt;
+    if (CONFIG.originality <= 3) {
+      return base + ' Write in a familiar, comfortable style.';
+    } else if (CONFIG.originality >= 7) {
+      return base +
+        ' Be bold, surprising, and original. Avoid cliches and predictable phrases.' +
+        ' Take the story in unexpected directions.';
+    }
+    return base;
   }
 
   function getApiKey() {
@@ -150,6 +168,7 @@
         if (s.userWordsMax) CONFIG.userWordsMax = s.userWordsMax;
         if (s.aiWordsMin) CONFIG.aiWordsMin = s.aiWordsMin;
         if (s.aiWordsMax) CONFIG.aiWordsMax = s.aiWordsMax;
+        if (s.originality != null) CONFIG.originality = s.originality;
       } catch (_) {}
     }
   }
@@ -160,6 +179,7 @@
       userWordsMax: CONFIG.userWordsMax,
       aiWordsMin: CONFIG.aiWordsMin,
       aiWordsMax: CONFIG.aiWordsMax,
+      originality: CONFIG.originality,
     }));
   }
 
@@ -171,6 +191,7 @@
     userMaxInput.value = CONFIG.userWordsMax;
     aiMinInput.value = CONFIG.aiWordsMin;
     aiMaxInput.value = CONFIG.aiWordsMax;
+    originalityInput.value = CONFIG.originality;
     modal.classList.remove('hidden');
     userMinInput.focus();
   }
@@ -205,6 +226,8 @@
       CONFIG.aiWordsMin = aMin;
       CONFIG.aiWordsMax = aMax;
     }
+
+    CONFIG.originality = parseInt(originalityInput.value, 10);
 
     saveSettings();
     rollTargets();
@@ -340,7 +363,7 @@
         body: JSON.stringify({
           model: CONFIG.model,
           messages: [
-            { role: 'system', content: CONFIG.systemPrompt },
+            { role: 'system', content: getSystemPrompt() },
             {
               role: 'user',
               content:
@@ -350,7 +373,7 @@
           ],
           stream: true,
           max_tokens: state.aiTarget,
-          temperature: 0.9,
+          temperature: getTemperature(),
         }),
         signal: state.abortController.signal,
       });

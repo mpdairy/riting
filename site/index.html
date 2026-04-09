@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>riting</title>
+  <title>Riting Assistant</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✍️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap"
@@ -23,7 +24,7 @@
   </div>
   <div id="page">
     <textarea id="editor" autofocus spellcheck="true"
-              placeholder="start writing..."></textarea>
+              placeholder="Start writing and the Riting Assistant will occasionally assist you!"></textarea>
     <div id="status"></div>
   </div>
   <button id="settings-btn" title="Settings">&#9881;</button>
@@ -52,6 +53,12 @@
           <label for="ai-max">max</label>
           <input type="number" id="ai-max" min="1" max="200">
         </div>
+      </div>
+      <div class="setting-section">writing style</div>
+      <div class="slider-row">
+        <span class="slider-label">cliche</span>
+        <input type="range" id="originality" min="0" max="10" value="5" step="1">
+        <span class="slider-label">original</span>
       </div>
       <div class="setting-section">advanced</div>
       <label for="key-input">your own groq api key (optional)

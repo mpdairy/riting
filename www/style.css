@@ -233,6 +233,53 @@ html, body {
   margin-bottom: 0;
 }
 
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.slider-label {
+  font-size: 0.75rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #2a2a2a;
+  border-radius: 2px;
+  outline: none;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #666;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb:hover {
+  background: #888;
+}
+
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #666;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .setting-section {
   color: #444;
   font-size: 0.75rem;
