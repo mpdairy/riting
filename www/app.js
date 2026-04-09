@@ -42,6 +42,9 @@
   var originalityInput = document.getElementById('originality');
   var saveBtn = document.getElementById('save-btn');
   var cancelBtn = document.getElementById('cancel-btn');
+  var downloadBtn = document.getElementById('download-btn');
+  var clearTabBtn = document.getElementById('clear-tab-btn');
+  var clearAllBtn = document.getElementById('clear-all-btn');
 
   // --- Helpers ---
 
@@ -242,6 +245,66 @@
     setTimeout(function () {
       if (!state.generating) setStatus('');
     }, 2000);
+  });
+
+  clearTabBtn.addEventListener('click', function () {
+    if (confirm('Clear the story in tab ' + state.currentTab + '? This cannot be undone.')) {
+      editor.value = '';
+      saveDraftNow();
+      state.wordCount = 0;
+      state.prevWordCount = 0;
+      updateTabIndicators();
+      hideSettings();
+      setStatus('story cleared');
+      setTimeout(function () { setStatus(''); }, 2000);
+    }
+  });
+
+  clearAllBtn.addEventListener('click', function () {
+    if (confirm('Clear ALL stories in ALL tabs? This cannot be undone.')) {
+      if (confirm('Are you really sure? All 8 tabs will be wiped.')) {
+        for (var t = 1; t <= 8; t++) {
+          localStorage.removeItem(draftKey(t));
+        }
+        editor.value = '';
+        state.wordCount = 0;
+        state.prevWordCount = 0;
+        updateTabIndicators();
+        hideSettings();
+        setStatus('all stories cleared');
+        setTimeout(function () { setStatus(''); }, 2000);
+      }
+    }
+  });
+
+  downloadBtn.addEventListener('click', function () {
+    saveDraftNow();
+    var delay = 0;
+    var count = 0;
+    for (var t = 1; t <= 8; t++) {
+      var draft = localStorage.getItem(draftKey(t));
+      if (draft && draft.trim().length > 0) {
+        (function (tab, content) {
+          setTimeout(function () {
+            var blob = new Blob([content], { type: 'text/plain' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'story-' + tab + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, delay);
+        })(t, draft);
+        delay += 300;
+        count++;
+      }
+    }
+    if (count === 0) {
+      setStatus('no stories to download');
+      setTimeout(function () { setStatus(''); }, 2000);
+    }
   });
 
   keyInput.addEventListener('keydown', function (e) {
